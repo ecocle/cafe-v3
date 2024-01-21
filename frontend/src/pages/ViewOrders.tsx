@@ -27,6 +27,7 @@ const baseUrl =
     process.env.NODE_ENV === "production" ? "" : "http://localhost:5000";
 
 type Order = {
+    id: string;
     order_time: string;
     first_name: string;
     last_name: string;
