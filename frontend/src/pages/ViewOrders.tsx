@@ -27,7 +27,6 @@ const baseUrl =
     process.env.NODE_ENV === "production" ? "" : "http://localhost:5000";
 
 type Order = {
-    id: number;
     order_time: string;
     first_name: string;
     last_name: string;
@@ -322,9 +321,7 @@ const ViewOrders = () => {
                                         <TableCell colSpan={8}>
                                             Totals:
                                         </TableCell>
-                                        <TableCellComponent
-                                            data="Price"
-                                        >
+                                        <TableCellComponent data="Price">
                                             ¥{totalPrice}
                                         </TableCellComponent>
                                     </TableRow>

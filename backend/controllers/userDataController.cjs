@@ -1,26 +1,11 @@
-const jwt = require("jsonwebtoken");
 const pool = require("../config/database.cjs");
+const authService = require("../services/authenticationService.cjs");
 
-const secretKey = process.env.SECRET_KEY;
 const SELECT_USER_QUERY =
     "SELECT User_name, Balance, First_name, Last_name, Password, ID FROM Accounts WHERE User_name = ?";
 
 const userData = async (req, res) => {
-    const authHeader = req.headers.authorization;
-    let username = req.session.username;
-
-    if (!username && authHeader && authHeader.startsWith("Bearer ")) {
-        const token = authHeader.split("Bearer ")[1];
-        try {
-            username = getUsernameFromToken(token);
-        } catch (error) {
-            return res.status(401).json({ error: "Invalid token" });
-        }
-    }
-
-    if (!username) {
-        return res.status(401).json({ error: "Authentication required" });
-    }
+    const { username, id } = authService.authenticateUser(req);
 
     try {
         const [rows] = await pool.query(SELECT_USER_QUERY, [username]);
@@ -42,11 +27,6 @@ const userData = async (req, res) => {
         console.error("Error fetching user data:", error);
         res.status(500).json({ error: "Internal server error" });
     }
-};
-
-const getUsernameFromToken = (token) => {
-    const decodedToken = jwt.verify(token, secretKey);
-    return decodedToken.username;
 };
 
 module.exports = { userData };

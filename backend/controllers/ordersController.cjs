@@ -1,49 +1,39 @@
 const pool = require("../config/database.cjs");
-const jwt = require("jsonwebtoken");
+const authService = require("../services/authenticationService.cjs");
 
-const secretKey = process.env.SECRET_KEY;
-
-const orders = async (req, res) => {
-    const authHeader = req.headers.authorization;
-    const id = req.headers.userinformation;
-    let username = "";
-
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-        const token = authHeader.split("Bearer ")[1];
-        try {
-            const decodedToken = jwt.verify(token, secretKey);
-            username = decodedToken.username;
-        } catch (error) {
-            return res.status(401).json({ error: "Invalid token" });
-        }
-    }
-
-    if (!username) {
-        return res.status(401).json({ error: "Authentication required" });
-    }
-
+const addFundToAccount = async (req, res) => {
     try {
-        const date = req.query.date;
-        let query = "";
-        if (username === "Admin") {
-            query = "SELECT * FROM Orders";
+        // Authenticate user and obtain user information
+        const { id, username } = authService.authenticateUser(req);
+
+        // Check if user is authenticated
+        if (username) {
+            const data = req.body;
+            const amount = parseFloat(data.amount);
+
+            // Validate the amount (you can add more validation if needed)
+            if (isNaN(amount) || amount <= 0) {
+                return res.status(400).json({ error: "Invalid amount" });
+            }
+
+            // Update user's balance
+            const updateSql =
+                "UPDATE Accounts SET Balance = Balance + ? " +
+                "WHERE User_name = ?";
+            const updateValues = [amount, username];
+            await pool.query(updateSql, updateValues);
+
+            // Respond with success message
+            res.json({ message: "Amount added to account" });
         } else {
-            query = "SELECT * FROM Orders WHERE Order_ID = ?";
+            // User not authenticated
+            res.status(401).json({ error: "User not logged in" });
         }
-        const queryParams = [id];
-
-        if (date) {
-            query += " WHERE DATE(order_time) = ?";
-            queryParams.push(date);
-        }
-
-        query += " ORDER BY order_time DESC";
-
-        const [results] = await pool.query(query, queryParams);
-        res.json({ data: results });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        // Handle unexpected errors
+        console.error("Error adding fund to account:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 };
 
-module.exports = { orders };
+module.exports = { addFundToAccount };

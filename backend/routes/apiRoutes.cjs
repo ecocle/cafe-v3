@@ -12,6 +12,10 @@ const { signIn } = require("../controllers/signInController.cjs");
 const { userData } = require("../controllers/userDataController.cjs");
 const { itemData } = require("../controllers/itemDataController.cjs");
 const { orders } = require("../controllers/ordersController.cjs");
+const { order } = require("../controllers/orderController.cjs");
+const {
+    addFundToAccount,
+} = require("../controllers/addFundToAccountController.cjs");
 
 const router = express.Router();
 
@@ -25,5 +29,7 @@ router.post("/signIn", (req, res) => signIn(req, res));
 router.get("/userData", (req, res) => userData(req, res));
 router.get("/itemData/:itemType/:itemName", (req, res) => itemData(req, res));
 router.get("/orders", (req, res) => orders(req, res));
+router.post("/order", (req, res) => order(req, res));
+router.post("/addFundToAccount", (req, res) => addFundToAccount(req, res));
 
 module.exports = router;

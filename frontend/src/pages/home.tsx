@@ -76,7 +76,7 @@ const ProfileDropdown = () => {
         }
 
         try {
-            const response = await fetch(`${baseUrl}/api/addFundoAccount`, {
+            const response = await fetch(`${baseUrl}/api/addFundToAccount`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -156,7 +156,7 @@ const ProfileDropdown = () => {
                                 </span>
                             </div>
                         ) : (
-                            <div>
+                            <div className="flex flex-col space-y-4">
                                 <DialogHeader>
                                     <DialogTitle>Add Funds</DialogTitle>
                                     <DialogDescription>

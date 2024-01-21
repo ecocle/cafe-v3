@@ -23,7 +23,7 @@ const MenuCard = ({
     largePrice,
     className,
 }: MenuCardProps) => {
-    const navigation = useNavigate();
+    const navigate = useNavigate();
 
     return (
         <Card className={className}>
@@ -41,7 +41,7 @@ const MenuCard = ({
             <CardFooter>
                 <Button
                     variant="default"
-                    onClick={() => navigation(`./order#name=${item}`)}
+                    onClick={() => navigate(`./order#name=${item}`)}
                 >
                     Order
                 </Button>

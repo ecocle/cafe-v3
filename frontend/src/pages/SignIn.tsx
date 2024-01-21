@@ -108,7 +108,7 @@ const SignIn = () => {
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col space-y-4 w-11/12 max-w-md p-6"
+                className="flex flex-col space-y-4 w-full max-w-md p-6"
             >
                 <Card>
                     <CardHeader>

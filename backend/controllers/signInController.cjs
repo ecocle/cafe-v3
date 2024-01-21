@@ -8,23 +8,27 @@ const signIn = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await pool.execute(
+        const [userRows] = await pool.execute(
             "SELECT * FROM Accounts WHERE User_name = ?",
             [username],
         );
 
-        if (!user[0].length) {
+        if (!userRows.length) {
             return res.status(401).json({ error: "Invalid credentials" });
         }
 
-        const storedPassword = user[0][0].Password;
+        const user = userRows[0];
+        const storedPassword = user.Password;
+        const userId = user.ID;
 
         const isPasswordValid = await bcrypt.compare(password, storedPassword);
         if (!isPasswordValid) {
             return res.status(401).json({ error: "Invalid credentials" });
         }
 
-        const token = jwt.sign({ username }, secretKey, { expiresIn: "30d" });
+        const token = jwt.sign({ id: userId, username }, secretKey, {
+            expiresIn: "30d",
+        });
 
         return res.json({ message: "Login successful", token });
     } catch (err) {

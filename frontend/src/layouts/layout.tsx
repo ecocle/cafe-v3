@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Breadcrumb from "./Breadcrumb";
+import Breadcrumb from "./breadcrumb";
 import Home from "@/pages/Home";
 import ViewOrders from "@/pages/ViewOrders";
 import SignIn from "@/pages/SignIn";
@@ -8,6 +8,8 @@ import Coffee from "@/pages/Coffee";
 import NonCaffeinated from "@/pages/NonCaffeinated";
 import Breakfast from "@/pages/Breakfast";
 import Order from "@/pages/Order";
+import NotAuthorized from "@/pages/NotAuthorized";
+import NotFound from "@/pages/404";
 
 const Layout = () => {
     return (
@@ -38,6 +40,11 @@ const Layout = () => {
                             path="/breakfast/order"
                             element={<Order itemType="Breakfast" />}
                         />
+                        <Route
+                            path="/not-authorized"
+                            element={<NotAuthorized />}
+                        />
+                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </main>
                 <footer className="text-muted-foreground font-normal mt-auto mb-2">

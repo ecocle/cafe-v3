@@ -125,11 +125,11 @@ const Order = ({ itemType }: { itemType: string }) => {
         "Classic flavoured Porridge",
         "Chocolate flavoured Porridge",
     ];
-    const navigation = useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!token) {
-            navigation("/not-authorized");
+            navigate("/not-authorized");
         }
     });
 
@@ -157,7 +157,7 @@ const Order = ({ itemType }: { itemType: string }) => {
     }, [itemName, itemType, setItemPrice]);
 
     useEffect(() => {
-        fetch(`${baseUrl}/api/user_data`, {
+        fetch(`${baseUrl}/api/userData`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -170,7 +170,7 @@ const Order = ({ itemType }: { itemType: string }) => {
                 }
             })
             .catch((error) => console.error("Error:", error));
-    }, []);
+    });
 
     useEffect(() => {
         setOptions((prevOptions) => ({ ...prevOptions, total: itemPrice }));
@@ -255,7 +255,6 @@ const Order = ({ itemType }: { itemType: string }) => {
             comments: value.comments,
             useCup: value.useCup,
             balance: userData.balance - finalTotal,
-            id: userData.id,
         };
 
         try {
@@ -273,7 +272,7 @@ const Order = ({ itemType }: { itemType: string }) => {
                 setIsLoading(false);
             }
 
-            navigation("/");
+            navigate("/");
             setIsLoading(false);
         } catch (error) {
             console.error("Error placing order:", error);
@@ -282,7 +281,7 @@ const Order = ({ itemType }: { itemType: string }) => {
     };
 
     return (
-        <div className="flex flex-col h-full justify-center">
+        <div className="flex flex-col h-full w-full justify-center items-center">
             {isLoadingBack ? (
                 <Loading message="Fetching drink details..." />
             ) : isInvalidDrink ? (
@@ -291,7 +290,7 @@ const Order = ({ itemType }: { itemType: string }) => {
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-4 flex flex-co p-8"
+                        className="space-y-4 flex flex-col w-full max-w-md p-8"
                     >
                         <Card>
                             <CardHeader>
@@ -301,7 +300,7 @@ const Order = ({ itemType }: { itemType: string }) => {
                                     drink.
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-4">
+                            <CardContent className="space-y-2 md:space-y-3 lg:space-y-4">
                                 <FormField
                                     control={form.control}
                                     name="size"
@@ -516,10 +515,7 @@ const Order = ({ itemType }: { itemType: string }) => {
                                                     }
                                                 />
                                             </FormControl>
-                                            <FormLabel
-                                                htmlFor="useCup"
-                                                className="text-base leading-4 ml-2"
-                                            >
+                                            <FormLabel className="text-base leading-4 ml-2">
                                                 Use own cup
                                             </FormLabel>
                                             <FormMessage />
@@ -531,7 +527,7 @@ const Order = ({ itemType }: { itemType: string }) => {
                                 <CardTitle>
                                     Total: ¥{options.total.toFixed(1)}
                                 </CardTitle>
-                                <Button type="submit">
+                                <Button disabled={isLoading} type="submit">
                                     {isLoading ? (
                                         <div className="animate-spin">
                                             <Loader2 />

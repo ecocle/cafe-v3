@@ -44,7 +44,7 @@ const formSchema = z.object({
 const SignUp = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
-    const navigation = useNavigate();
+    const navigate = useNavigate();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -80,7 +80,7 @@ const SignUp = () => {
                     setError(responseData.message || "Error signing up");
                 }
             } else {
-                navigation("/");
+                navigate("/");
             }
         } catch (error) {
             setError("Error signing up");
@@ -93,7 +93,7 @@ const SignUp = () => {
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col space-y-4 w-11/12 max-w-md p-6"
+                className="flex flex-col space-y-4 w-full max-w-md p-6"
             >
                 <Card>
                     <CardHeader>
