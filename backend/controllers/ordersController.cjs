@@ -1,39 +1,31 @@
 const pool = require("../config/database.cjs");
 const authService = require("../services/authenticationService.cjs");
 
-const addFundToAccount = async (req, res) => {
+const orders = async (req, res) => {
+    const { username, id } = authService.authenticateUser(req);
+
     try {
-        // Authenticate user and obtain user information
-        const { id, username } = authService.authenticateUser(req);
-
-        // Check if user is authenticated
-        if (username) {
-            const data = req.body;
-            const amount = parseFloat(data.amount);
-
-            // Validate the amount (you can add more validation if needed)
-            if (isNaN(amount) || amount <= 0) {
-                return res.status(400).json({ error: "Invalid amount" });
-            }
-
-            // Update user's balance
-            const updateSql =
-                "UPDATE Accounts SET Balance = Balance + ? " +
-                "WHERE User_name = ?";
-            const updateValues = [amount, username];
-            await pool.query(updateSql, updateValues);
-
-            // Respond with success message
-            res.json({ message: "Amount added to account" });
+        const date = req.query.date;
+        let query = "";
+        if (username === "Admin") {
+            query = "SELECT * FROM Orders";
         } else {
-            // User not authenticated
-            res.status(401).json({ error: "User not logged in" });
+            query = "SELECT * FROM Orders WHERE Order_ID = ?";
         }
+        const queryParams = [id];
+
+        if (date) {
+            query += " WHERE DATE(order_time) = ?";
+            queryParams.push(date);
+        }
+
+        query += " ORDER BY order_time DESC";
+
+        const [results] = await pool.query(query, queryParams);
+        res.json({ data: results });
     } catch (error) {
-        // Handle unexpected errors
-        console.error("Error adding fund to account:", error);
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: error.message });
     }
 };
 
-module.exports = { addFundToAccount };
+module.exports = { orders };
