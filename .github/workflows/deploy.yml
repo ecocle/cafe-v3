@@ -1,0 +1,32 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: SSH into Server and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          script: |
+            cd /var/www/html/cafe-v3/frontend
+            sudo rm -r dist
+            sudo rm -r node_modules
+            sudo rm package-lock.json
+            sudo git pull https://github.com/ecocle/cafe-v3 main
+            sudo chown -R root:root ./
+            npm install
+            npm run build
+            sudo systemctl restart cafe-server
