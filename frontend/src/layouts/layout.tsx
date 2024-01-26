@@ -30,15 +30,15 @@ const Layout = () => {
                         <Route path="/breakfast" element={<Breakfast />} />
                         <Route
                             path="/coffee/order"
-                            element={<Order itemType="Coffee" />}
+                            element={<Order itemType="coffee" />}
                         />
                         <Route
                             path="/non-caffeinated/order"
-                            element={<Order itemType="Caffeine_free" />}
+                            element={<Order itemType="non_caffeinated" />}
                         />
                         <Route
                             path="/breakfast/order"
-                            element={<Order itemType="Breakfast" />}
+                            element={<Order itemType="breakfast" />}
                         />
                         <Route
                             path="/not-authorized"

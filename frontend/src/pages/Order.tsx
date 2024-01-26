@@ -134,7 +134,7 @@ const Order = ({ itemType }: { itemType: string }) => {
     });
 
     useEffect(() => {
-        const fetchDrinkDetails = async () => {
+        const fetchItemDetails = async () => {
             try {
                 const response = await fetch(
                     `${baseUrl}/api/itemData/${itemType}/${itemName}`,
@@ -142,7 +142,7 @@ const Order = ({ itemType }: { itemType: string }) => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    setItemPrice(parseFloat(data[0].Price));
+                    setItemPrice(data[0].price);
                 } else {
                     console.error("Error fetching drink details:", data.error);
                     setIsInvalidDrink(true);
@@ -153,7 +153,7 @@ const Order = ({ itemType }: { itemType: string }) => {
             }
         };
 
-        fetchDrinkDetails().then(() => setIsLoadingBack(false));
+        fetchItemDetails().then(() => setIsLoadingBack(false));
     }, [itemName, itemType, setItemPrice]);
 
     useEffect(() => {
@@ -524,9 +524,7 @@ const Order = ({ itemType }: { itemType: string }) => {
                                 />
                             </CardContent>
                             <CardFooter className="space-x-4">
-                                <CardTitle>
-                                    Total: ¥{options.total.toFixed(1)}
-                                </CardTitle>
+                                <CardTitle>Total: ¥{options.total}</CardTitle>
                                 <Button disabled={isLoading} type="submit">
                                     {isLoading ? (
                                         <div className="animate-spin">

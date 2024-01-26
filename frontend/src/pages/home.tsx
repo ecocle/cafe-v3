@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
 import { ModeToggle } from "@/components/ModeToggle";
 import Error from "@/components/Error";
 import Loading from "@/components/Loading";
@@ -23,8 +22,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import paymentImage from "../../public/images/paymentImage.jpg";
-import { Plus, Eye, LogOut, Settings, UserRound, Loader2 } from "lucide-react";
+import paymentImage from "../images/paymentImage.jpg";
+import { Eye, Loader2, LogOut, Plus, Settings, UserRound } from "lucide-react";
 
 const baseUrl =
     process.env.NODE_ENV === "production" ? "" : "http://localhost:5000";
@@ -93,8 +92,8 @@ const ProfileDropdown = () => {
             } else {
                 setError("Something went wrong. Please try again later.");
             }
-        } catch (error: any) {
-            setError(error.message);
+        } catch (e: any) {
+            setError(e.message);
         } finally {
             setAddingFunds(false);
         }

@@ -4,14 +4,14 @@ const itemData = async (req, res) => {
     const { itemType, itemName } = req.params;
 
     try {
-        const allowedTables = ["Coffee", "Caffeine_free", "Breakfast"];
+        const allowedTables = ["coffee", "non_caffeinated", "breakfast"];
         if (!allowedTables.includes(itemType)) {
             return res.status(400).json({ error: "Invalid item type" });
         }
 
         const query = `SELECT *
                        FROM ?? 
-                       WHERE Name = ?`;
+                       WHERE name = ?`;
         const [rows] = await pool.query(query, [itemType, itemName]);
 
         if (rows.length > 0) {

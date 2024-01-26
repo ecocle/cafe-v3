@@ -4,10 +4,10 @@ const authService = require("../services/authenticationService.cjs");
 const order = async (req, res) => {
     const data = req.body;
 
-    const { username, id } = authService.authenticateUser(req);
+    const { username, user_id } = authService.authenticateUser(req);
 
     try {
-        const result = await orderResult(data, id);
+        const result = await orderResult(data, user_id);
         res.json({ message: "Order placed successfully", result });
     } catch (error) {
         console.error("Error placing order:", error);
@@ -18,7 +18,7 @@ const order = async (req, res) => {
     }
 };
 
-const orderResult = async (data, id) => {
+const orderResult = async (data, user_id) => {
     let connection;
     try {
         connection = await pool.getConnection();
@@ -28,10 +28,8 @@ const orderResult = async (data, id) => {
             : "";
 
         const sql = `
-            INSERT INTO Orders (
-                First_name, Last_name, Coffee_type, Temperature, Size,
-                Toppings, Price, Order_time, Comments, Cup, Order_ID
-            )
+            INSERT INTO orders (first_name, last_name, item_type, temperature, size,
+                                toppings, price, order_time, comments, cup, order_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)
         `;
 
@@ -45,13 +43,13 @@ const orderResult = async (data, id) => {
             data.price,
             data.comments,
             data.useCup,
-            id,
+            user_id,
         ];
 
         const [result] = await pool.query(sql, values);
 
         const updateSql =
-            "UPDATE Accounts SET Balance = ? WHERE First_name = ?";
+            "UPDATE accounts SET Balance = ? WHERE First_name = ?";
         const updateValues = [data.balance, data.firstName];
 
         await pool.query(updateSql, updateValues);

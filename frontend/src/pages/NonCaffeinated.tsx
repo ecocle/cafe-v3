@@ -9,7 +9,7 @@ const baseUrl =
 
 type NonCaffeinatedList = {
     Name: string;
-    Price: string;
+    Price: number;
 };
 
 const NonCaffeinated = () => {
@@ -29,11 +29,11 @@ const NonCaffeinated = () => {
     useEffect(() => {
         fetch(`${baseUrl}/api/dataNonCaffeinated`)
             .then((response) => response.json())
-            .then((data: { Name: string; Price: number }[]) => {
+            .then((data: { name: string; price: number }[]) => {
                 const formattedData: NonCaffeinatedList[] = data.map(
                     (item) => ({
-                        Name: item.Name,
-                        Price: item.Price.toString(),
+                        Name: item.name,
+                        Price: item.price,
                     }),
                 );
                 isLoading(false);
@@ -46,7 +46,7 @@ const NonCaffeinated = () => {
 
     function renderMenuCard() {
         return nonCaffeinatedList.map((nonCaffeinatedItem, index) => {
-            const price = parseFloat(nonCaffeinatedItem.Price);
+            const price = nonCaffeinatedItem.Price;
             const largePrice = price + 3;
 
             return (

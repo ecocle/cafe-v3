@@ -3,12 +3,12 @@ const authService = require("../services/authenticationService.cjs");
 
 const addFundToAccount = async (req, res) => {
     const data = req.body;
-    const { id, username } = authService.authenticateUser(req);
+    const { user_id, username } = authService.authenticateUser(req);
 
     const amount = parseFloat(data.amount);
 
     const updateSql =
-        "UPDATE Accounts SET Balance = Balance + ? " + "WHERE User_name = ?";
+        "UPDATE accounts SET Balance = Balance + ? " + "WHERE user_id = ?";
     const updateValues = [amount, username];
     await pool.query(updateSql, updateValues);
     res.json({ message: "Amount added to account" });

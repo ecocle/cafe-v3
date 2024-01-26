@@ -9,7 +9,7 @@ const baseUrl =
 
 type CoffeeItem = {
     Name: string;
-    Price: string;
+    Price: number;
 };
 
 const Coffee = () => {
@@ -27,10 +27,10 @@ const Coffee = () => {
     useEffect(() => {
         fetch(`${baseUrl}/api/dataCoffee`)
             .then((response) => response.json())
-            .then((data: { Name: string; Price: number }[]) => {
+            .then((data: { name: string; price: number }[]) => {
                 const formattedData: CoffeeItem[] = data.map((item) => ({
-                    Name: item.Name,
-                    Price: item.Price.toString(),
+                    Name: item.name,
+                    Price: item.price,
                 }));
                 isLoading(false);
                 setCoffeeList(formattedData);
@@ -42,7 +42,7 @@ const Coffee = () => {
 
     function renderMenuCard() {
         return coffeeList.map((coffeeItem, index) => {
-            const price = parseFloat(coffeeItem.Price);
+            const price = coffeeItem.Price;
             const largePrice = price + 3;
 
             return (

@@ -2,23 +2,23 @@ const pool = require("../config/database.cjs");
 const authService = require("../services/authenticationService.cjs");
 
 const SELECT_USER_QUERY =
-    "SELECT User_name, Balance, First_name, Last_name, Password, ID FROM Accounts WHERE User_name = ?";
+    "SELECT username, balance, first_name, last_name, password, user_id FROM accounts WHERE user_id = ?";
 
 const userData = async (req, res) => {
-    const { username, id } = authService.authenticateUser(req);
+    const { username, user_id } = authService.authenticateUser(req);
 
     try {
-        const [rows] = await pool.query(SELECT_USER_QUERY, [username]);
+        const [rows] = await pool.query(SELECT_USER_QUERY, [user_id]);
 
         if (rows.length > 0) {
             const userData = rows[0];
             res.json({
-                username: userData.User_name,
-                balance: userData.Balance,
-                firstName: userData.First_name,
-                lastName: userData.Last_name,
-                password: userData.Password,
-                id: userData.ID,
+                username: userData.username,
+                balance: userData.balance,
+                firstName: userData.first_name,
+                lastName: userData.last_name,
+                password: userData.password,
+                id: user_id,
             });
         } else {
             res.status(404).json({ error: "User data not found" });

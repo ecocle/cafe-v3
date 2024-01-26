@@ -38,6 +38,7 @@ type Order = {
     price: number;
     comments: string | null;
     cup: string | null;
+    user_id: string;
 };
 
 type TableCellComponentProps = {
@@ -191,17 +192,17 @@ const ViewOrders = () => {
 
     const setOrderData = (rawData: any) => {
         const transformedData = rawData.data.map((order: any) => ({
-            id: order.ID,
-            order_time: order.Order_time,
-            first_name: order.First_name,
-            last_name: order.Last_name,
-            coffee_type: order.Coffee_type,
-            temperature: order.Temperature,
-            toppings: order.Toppings,
-            size: order.Size,
-            price: parseFloat(order.Price),
-            comments: order.Comments,
-            cup: order.Cup,
+            id: order.id,
+            order_time: order.order_time,
+            first_name: order.first_name,
+            last_name: order.first_name,
+            coffee_type: order.coffee_orders,
+            temperature: order.temperature,
+            toppings: order.toppings,
+            size: order.size,
+            price: order.price,
+            comments: order.comments,
+            cup: order.cup,
         }));
         setIsEmpty(transformedData.length === 0);
         setOrders(transformedData);

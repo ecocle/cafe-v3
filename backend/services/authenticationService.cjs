@@ -4,7 +4,7 @@ const secretKey = process.env.SECRET_KEY;
 
 const authenticateUser = (req) => {
     const authHeader = req.headers.authorization;
-    let id = "";
+    let user_id = "";
     let username = "";
 
     if (authHeader && authHeader.startsWith("Bearer ")) {
@@ -12,7 +12,7 @@ const authenticateUser = (req) => {
         try {
             const decodedToken = jwt.verify(token, secretKey);
             username = decodedToken.username;
-            id = decodedToken.id;
+            user_id = decodedToken.user_id;
         } catch (error) {
             throw new Error("Invalid token");
         }
@@ -22,7 +22,7 @@ const authenticateUser = (req) => {
         throw new Error("Authentication required");
     }
 
-    return { id, username };
+    return { user_id, username };
 };
 
 module.exports = { authenticateUser };

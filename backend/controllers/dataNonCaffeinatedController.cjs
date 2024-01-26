@@ -3,7 +3,7 @@ const pool = require("../config/database.cjs");
 
 const getDataNonCaffeinated = async (req, res) => {
     try {
-        const queryDataNonCaffeinated = "SELECT * FROM Caffeine_free";
+        const queryDataNonCaffeinated = "SELECT * FROM non_caffeinated";
 
         const cachedResults = getFromCache(queryDataNonCaffeinated);
         let rows;

@@ -9,7 +9,7 @@ const signIn = async (req, res) => {
 
     try {
         const [userRows] = await pool.execute(
-            "SELECT * FROM Accounts WHERE User_name = ?",
+            "SELECT * FROM accounts WHERE username = ?",
             [username],
         );
 
@@ -18,15 +18,15 @@ const signIn = async (req, res) => {
         }
 
         const user = userRows[0];
-        const storedPassword = user.Password;
-        const userId = user.ID;
+        const storedPassword = user.password;
+        const userId = user.user_id;
 
         const isPasswordValid = await bcrypt.compare(password, storedPassword);
         if (!isPasswordValid) {
             return res.status(401).json({ error: "Invalid credentials" });
         }
 
-        const token = jwt.sign({ id: userId, username }, secretKey, {
+        const token = jwt.sign({ user_id: userId, username }, secretKey, {
             expiresIn: "30d",
         });
 

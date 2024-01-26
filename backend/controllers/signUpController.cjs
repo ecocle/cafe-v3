@@ -5,7 +5,7 @@ const signUp = async (req, res) => {
     const { username, password, firstName, lastName } = req.body;
 
     try {
-        const checkUserSql = "SELECT * FROM Accounts WHERE User_name = ?";
+        const checkUserSql = "SELECT * FROM accounts WHERE user_id = ?";
         const [existingUser] = await pool.execute(checkUserSql, [username]);
 
         if (existingUser.length > 0) {
@@ -17,12 +17,12 @@ const signUp = async (req, res) => {
         const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
         const insertUserSql =
-            "INSERT INTO Accounts (User_name, Password, First_name, Last_name) VALUES (?, ?, ?, ?)";
+            "INSERT INTO accounts (username, password, first_name, last_name) VALUES (?, ?, ?, ?)";
         await pool.execute(insertUserSql, [
             username,
             encryptedPassword,
             firstName,
-            lastName,
+            lastName
         ]);
 
         return res.json({ message: "Account created successfully" });

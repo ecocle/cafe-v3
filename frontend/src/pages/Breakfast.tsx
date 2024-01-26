@@ -9,7 +9,7 @@ const baseUrl =
 
 type BreakfastList = {
     Name: string;
-    Price: string;
+    Price: number;
 };
 
 const Breakfast = () => {
@@ -28,10 +28,10 @@ const Breakfast = () => {
     useEffect(() => {
         fetch(`${baseUrl}/api/dataBreakfast`)
             .then((response) => response.json())
-            .then((data: { Name: string; Price: number }[]) => {
+            .then((data: { name: string; price: number }[]) => {
                 const formattedData: BreakfastList[] = data.map((item) => ({
-                    Name: item.Name,
-                    Price: item.Price.toString(),
+                    Name: item.name,
+                    Price: item.price,
                 }));
                 isLoading(false);
                 setBreakfastList(formattedData);
@@ -43,7 +43,7 @@ const Breakfast = () => {
 
     function renderMenuCard() {
         return breakfastList.map((breakfastItem, index) => {
-            const price = parseFloat(breakfastItem.Price);
+            const price = breakfastItem.Price;
             const largePrice = price + 3;
 
             return (

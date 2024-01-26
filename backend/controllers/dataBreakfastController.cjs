@@ -3,7 +3,7 @@ const pool = require("../config/database.cjs");
 
 const getDataBreakfast = async (req, res) => {
     try {
-        const queryDataBreakfast = "SELECT * FROM Breakfast";
+        const queryDataBreakfast = "SELECT * FROM breakfast";
 
         const cachedResults = getFromCache(queryDataBreakfast);
         let rows;

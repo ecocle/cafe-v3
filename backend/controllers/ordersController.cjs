@@ -8,9 +8,9 @@ const orders = async (req, res) => {
         const date = req.query.date;
         let query = "";
         if (username === "Admin") {
-            query = "SELECT * FROM Orders";
+            query = "SELECT * FROM orders";
         } else {
-            query = "SELECT * FROM Orders WHERE Order_ID = ?";
+            query = "SELECT * FROM orders WHERE order_id = ?";
         }
         const queryParams = [id];
 
