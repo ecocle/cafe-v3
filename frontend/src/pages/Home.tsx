@@ -230,7 +230,7 @@ const Home = () => {
                             to="/sign-in"
                             className={buttonVariants({ variant: "outline" })}
                         >
-                            Sign In
+                            sign in
                         </Link>
                     </div>
                 )}
@@ -242,7 +242,7 @@ const Home = () => {
                 <div className="flex flex-col md:flex-row lg:flex-row lg:space-x-12 md:space-x-8">
                     <OrderButton redirectTo="/coffee">Coffee</OrderButton>
                     <OrderButton redirectTo="Non-caffeinated">
-                        Non-caffeinated Drinks
+                        Non-caffeanted Drinks
                     </OrderButton>
                     <OrderButton redirectTo="/breakfast">Breakfast</OrderButton>
                 </div>

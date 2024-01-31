@@ -8,8 +8,8 @@ const addFundToAccount = async (req, res) => {
     const amount = parseFloat(data.amount);
 
     const updateSql =
-        "UPDATE accounts SET Balance = Balance + ? " + "WHERE user_id = ?";
-    const updateValues = [amount, username];
+        "UPDATE accounts SET balance = balance + ? " + "WHERE user_id = ?";
+    const updateValues = [amount, user_id];
     await pool.query(updateSql, updateValues);
     res.json({ message: "Amount added to account" });
 };
