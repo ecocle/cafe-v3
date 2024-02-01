@@ -31,7 +31,7 @@ type Order = {
     order_time: string;
     first_name: string;
     last_name: string;
-    coffee_type: string;
+    type: string;
     temperature: string;
     toppings: string | null;
     size: string;
@@ -196,7 +196,7 @@ const ViewOrders = () => {
             order_time: order.order_time,
             first_name: order.first_name,
             last_name: order.first_name,
-            coffee_type: order.coffee_orders,
+            type: order.item_type,
             temperature: order.temperature,
             toppings: order.toppings,
             size: order.size,
@@ -250,7 +250,7 @@ const ViewOrders = () => {
                         </div>
                     ) : (
                         <main>
-                            <Table className="bg-background mx-auto w-11/12">
+                            <Table className="bg-card mx-auto w-11/12">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHeadComponent>
@@ -295,7 +295,7 @@ const ViewOrders = () => {
                                                 {item.last_name}
                                             </TableCellComponent>
                                             <TableCellComponent data="Type">
-                                                {item.coffee_type}
+                                                {item.type}
                                             </TableCellComponent>
                                             <TableCellComponent data="Temperature">
                                                 {item.temperature}
@@ -323,7 +323,10 @@ const ViewOrders = () => {
                                         <TableCell colSpan={8}>
                                             Totals:
                                         </TableCell>
-                                        <TableCellComponent data="Price">
+                                        <TableCellComponent
+                                            data="Price"
+                                            className="lg:text-right md:text-right"
+                                        >
                                             ¥{totalPrice}
                                         </TableCellComponent>
                                     </TableRow>
