@@ -62,7 +62,7 @@ const NonCaffeinated = () => {
     }
 
     return (
-        <div className="w-full h-full lg:h-2/3 mt-8 lg:mt-0 md:mt-0 md:h-5/6 flex flex-col items-center">
+        <div className="w-full h-full mt-8 lg:h-3/4 lg:mt-0 md:h-3/4 md:mt-0 flex flex-col items-center">
             {loading ? (
                 <Loading message="Fetching non caffeinated drinks..." />
             ) : (

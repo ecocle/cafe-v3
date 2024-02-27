@@ -239,7 +239,7 @@ const Home = () => {
                 <h1 className="font-pacifico lg:text-8xl md:text-8xl text-7xl font-bold">
                     MY Cafe
                 </h1>
-                <div className="flex flex-col md:flex-row lg:flex-row lg:space-x-12 md:space-x-8">
+                <div className="flex flex-col lg:flex-row lg:space-x-12">
                     <OrderButton redirectTo="/coffee">Coffee</OrderButton>
                     <OrderButton redirectTo="Non-caffeinated">
                         Non-caffeanted Drinks

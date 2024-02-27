@@ -31,10 +31,10 @@ const MenuCard = ({
                 <CardTitle>{item}</CardTitle>
             </CardHeader>
             <CardContent>
-                <CardDescription>Medium Price: ${mediumPrice}</CardDescription>
+                <CardDescription>Medium Price: ¥{mediumPrice}</CardDescription>
                 {largePrice && (
                     <CardDescription>
-                        Large Price: ${largePrice}
+                        Large Price: ¥{largePrice}
                     </CardDescription>
                 )}
             </CardContent>

@@ -16,7 +16,7 @@ const Layout = () => {
         <Router>
             <div className="flex flex-col justify-center items-center h-screen w-screen bg-background">
                 <Breadcrumb />
-                <main className="h-full w-full flex justify-center items-center overflow-auto">
+                <main className="h-full w-full flex flex-col justify-center items-center overflow-auto">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/view-orders" element={<ViewOrders />} />
