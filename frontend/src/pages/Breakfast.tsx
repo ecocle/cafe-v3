@@ -44,7 +44,7 @@ const Breakfast = () => {
     function renderMenuCard() {
         return breakfastList.map((breakfastItem, index) => {
             const price = breakfastItem.Price;
-            const largePrice = price + 6;
+            const largePrice = price + 3;
 
             return (
                 <MenuCard

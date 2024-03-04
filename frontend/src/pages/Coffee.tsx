@@ -43,7 +43,7 @@ const Coffee = () => {
     function renderMenuCard() {
         return coffeeList.map((coffeeItem, index) => {
             const price = coffeeItem.Price;
-            const largePrice = price + 6;
+            const largePrice = price + 3;
 
             return (
                 <MenuCard
