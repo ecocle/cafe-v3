@@ -90,10 +90,16 @@ const ProfileDropdown = () => {
             } else if (response.status === 400) {
                 setError("Please enter a valid amount.");
             } else {
-                setError("Something went wrong. Please try again later.");
+                const errorData = await response.json();
+                setError(
+                    errorData.message ||
+                        "Something went wrong. Please try again later.",
+                );
             }
-        } catch (e: any) {
-            setError(e.message);
+        } catch (error) {
+            setError(
+                "An error occurred while adding funds. Please try again later.",
+            );
         } finally {
             setAddingFunds(false);
         }

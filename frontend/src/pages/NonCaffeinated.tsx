@@ -47,7 +47,7 @@ const NonCaffeinated = () => {
     function renderMenuCard() {
         return nonCaffeinatedList.map((nonCaffeinatedItem, index) => {
             const price = nonCaffeinatedItem.Price;
-            const largePrice = price + 3;
+            const largePrice = price + 6;
 
             return (
                 <MenuCard
