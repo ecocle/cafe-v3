@@ -29,7 +29,7 @@ const orderResult = async (data, user_id) => {
 
         const sql = `
             INSERT INTO orders (first_name, last_name, item_type, temperature, size,
-                                toppings, price, order_time, comments, cup, order_id)
+                                toppings, price, order_time, comments, cup, user_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)
         `;
 
