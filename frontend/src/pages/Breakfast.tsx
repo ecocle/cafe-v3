@@ -8,8 +8,10 @@ const baseUrl =
     process.env.NODE_ENV === "production" ? "" : "http://localhost:5000";
 
 type BreakfastList = {
-    Name: string;
-    Price: number;
+    name: string;
+    price: number;
+    large: boolean;
+    disabled: boolean;
 };
 
 const Breakfast = () => {
@@ -28,10 +30,12 @@ const Breakfast = () => {
     useEffect(() => {
         fetch(`${baseUrl}/api/dataBreakfast`)
             .then((response) => response.json())
-            .then((data: { name: string; price: number }[]) => {
+            .then((data: BreakfastList[]) => {
                 const formattedData: BreakfastList[] = data.map((item) => ({
-                    Name: item.name,
-                    Price: item.price,
+                    name: item.name,
+                    price: item.price,
+                    large: !!item.large,
+                    disabled: !!item.disabled,
                 }));
                 isLoading(false);
                 setBreakfastList(formattedData);
@@ -43,16 +47,17 @@ const Breakfast = () => {
 
     function renderMenuCard() {
         return breakfastList.map((breakfastItem, index) => {
-            const price = breakfastItem.Price;
-            const largePrice = price + 3;
+            const price = breakfastItem.price;
+            const largePrice = breakfastItem.large ? price + 3 : undefined;
 
             return (
                 <MenuCard
                     className="basis-11/12 lg:basis-1/4 md:basis-1/4 whitespace-nowrap"
                     key={`menucard-${index}`}
-                    item={breakfastItem.Name}
+                    item={breakfastItem.name}
                     mediumPrice={price}
                     largePrice={largePrice}
+                    disabled={breakfastItem.disabled}
                 />
             );
         });

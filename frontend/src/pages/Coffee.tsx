@@ -7,13 +7,15 @@ import Loading from "@/components/Loading";
 const baseUrl =
     process.env.NODE_ENV === "production" ? "" : "http://localhost:5000";
 
-type CoffeeItem = {
-    Name: string;
-    Price: number;
+type CoffeeList = {
+    name: string;
+    price: number;
+    large: boolean;
+    disabled: boolean;
 };
 
 const Coffee = () => {
-    const [coffeeList, setCoffeeList] = useState<CoffeeItem[]>([]);
+    const [coffeeList, setCoffeeList] = useState<CoffeeList[]>([]);
     const navigate = useNavigate();
     const token = Cookies.get("token");
     const [loading, isLoading] = useState(true);
@@ -27,10 +29,12 @@ const Coffee = () => {
     useEffect(() => {
         fetch(`${baseUrl}/api/dataCoffee`)
             .then((response) => response.json())
-            .then((data: { name: string; price: number }[]) => {
-                const formattedData: CoffeeItem[] = data.map((item) => ({
-                    Name: item.name,
-                    Price: item.price,
+            .then((data: CoffeeList[]) => {
+                const formattedData: CoffeeList[] = data.map((item) => ({
+                    name: item.name,
+                    price: item.price,
+                    large: !!item.large,
+                    disabled: !!item.disabled,
                 }));
                 isLoading(false);
                 setCoffeeList(formattedData);
@@ -42,16 +46,16 @@ const Coffee = () => {
 
     function renderMenuCard() {
         return coffeeList.map((coffeeItem, index) => {
-            const price = coffeeItem.Price;
-            const largePrice = price + 3;
-
+            const price = coffeeItem.price;
+            const largePrice = coffeeItem.large ? price + 3 : undefined;
             return (
                 <MenuCard
                     className="basis-11/12 lg:basis-1/5 md:basis-1/4 whitespace-nowrap"
                     key={`menucard-${index}`}
-                    item={coffeeItem.Name}
+                    item={coffeeItem.name}
                     mediumPrice={price}
                     largePrice={largePrice}
+                    disabled={coffeeItem.disabled}
                 />
             );
         });

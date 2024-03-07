@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 type MenuCardProps = {
     item: string;
     mediumPrice: number;
+    disabled?: boolean;
     largePrice?: number;
     className?: string;
 };
@@ -22,6 +23,7 @@ const MenuCard = ({
     mediumPrice,
     largePrice,
     className,
+    disabled,
 }: MenuCardProps) => {
     const navigate = useNavigate();
 
@@ -41,6 +43,7 @@ const MenuCard = ({
             <CardFooter>
                 <Button
                     variant="default"
+                    disabled={disabled}
                     onClick={() => navigate(`./order#name=${item}`)}
                 >
                     Order

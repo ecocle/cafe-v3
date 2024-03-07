@@ -8,8 +8,10 @@ const baseUrl =
     process.env.NODE_ENV === "production" ? "" : "http://localhost:5000";
 
 type NonCaffeinatedList = {
-    Name: string;
-    Price: number;
+    name: string;
+    price: number;
+    large: boolean;
+    disabled: boolean;
 };
 
 const NonCaffeinated = () => {
@@ -29,11 +31,13 @@ const NonCaffeinated = () => {
     useEffect(() => {
         fetch(`${baseUrl}/api/dataNonCaffeinated`)
             .then((response) => response.json())
-            .then((data: { name: string; price: number }[]) => {
+            .then((data: NonCaffeinatedList[]) => {
                 const formattedData: NonCaffeinatedList[] = data.map(
                     (item) => ({
-                        Name: item.name,
-                        Price: item.price,
+                        name: item.name,
+                        price: item.price,
+                        large: !!item.large,
+                        disabled: !!item.disabled,
                     }),
                 );
                 isLoading(false);
@@ -46,16 +50,17 @@ const NonCaffeinated = () => {
 
     function renderMenuCard() {
         return nonCaffeinatedList.map((nonCaffeinatedItem, index) => {
-            const price = nonCaffeinatedItem.Price;
-            const largePrice = price + 3;
+            const price = nonCaffeinatedItem.price;
+            const largePrice = nonCaffeinatedItem.large ? price + 3 : undefined;
 
             return (
                 <MenuCard
                     className="basis-11/12 lg:basis-1/6 md:basis-1/4 whitespace-nowrap"
                     key={`menucard-${index}`}
-                    item={nonCaffeinatedItem.Name}
+                    item={nonCaffeinatedItem.name}
                     mediumPrice={price}
                     largePrice={largePrice}
+                    disabled={nonCaffeinatedItem.disabled}
                 />
             );
         });
