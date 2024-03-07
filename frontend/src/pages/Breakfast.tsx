@@ -21,7 +21,6 @@ const Breakfast = () => {
     const [loading, isLoading] = useState(true);
 
     useEffect(() => {
-        console.log(token);
         if (!token) {
             navigate("/not-authorized");
         }

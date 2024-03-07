@@ -126,7 +126,6 @@ const Order = ({ itemType }: { itemType: string }) => {
                     };
 
                     setItemDetails(convertedData);
-                    console.log("Item details:", convertedData);
                 } else {
                     console.error("Error fetching drink details:", data.error);
                     setIsInvalidDrink(true);
@@ -137,7 +136,7 @@ const Order = ({ itemType }: { itemType: string }) => {
             }
         };
 
-        fetchItemDetails().then(() => setIsLoadingBack(false));
+        fetchItemDetails();
     }, [itemName, itemType]);
 
     useEffect(() => {
@@ -154,7 +153,6 @@ const Order = ({ itemType }: { itemType: string }) => {
                     }));
 
                     setToppings(convertedData);
-                    console.log("Toppings:", convertedData);
                 } else {
                     console.error("Error fetching toppings:", data.error);
                 }
@@ -163,7 +161,7 @@ const Order = ({ itemType }: { itemType: string }) => {
             }
         };
 
-        fetchToppings();
+        fetchToppings().then(() => setIsLoadingBack(false));
     }, []);
 
     useEffect(() => {
