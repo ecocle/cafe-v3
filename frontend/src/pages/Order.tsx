@@ -180,7 +180,7 @@ const Order = ({ itemType }: { itemType: string }) => {
                 }
             })
             .catch((error) => console.error("Error:", error));
-    });
+    }, [token]);
 
     useEffect(() => {
         setOptions((prevOptions) => ({
