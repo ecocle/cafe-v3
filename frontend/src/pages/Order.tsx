@@ -53,12 +53,32 @@ const FormSchema = z.object({
 type Topping = {
     name: string;
     price: number;
+    disabled: boolean;
+};
+
+type ItemDetails = {
+    price: number;
+    hot: boolean;
+    normal: boolean;
+    cold: boolean;
+    large: boolean;
+    toppings: boolean;
 };
 
 const Order = ({ itemType }: { itemType: string }) => {
     const hashParams = new URLSearchParams(window.location.hash.substr(1));
     const itemName = hashParams.get("name") ?? "";
-    const [itemPrice, setItemPrice] = useState(0);
+    const [itemDetails, setItemDetails] = useState<ItemDetails>({
+        price: 0,
+        hot: false,
+        normal: false,
+        cold: false,
+        large: false,
+        toppings: false,
+    });
+    const [toppings, setToppings] = useState<Topping[]>([
+        { name: "", price: 0, disabled: false },
+    ]);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingBack, setIsLoadingBack] = useState(true);
     const token = Cookies.get("token");
@@ -78,53 +98,7 @@ const Order = ({ itemType }: { itemType: string }) => {
         firstName: "",
         lastName: "",
     });
-    const noLargeItems = [
-        "Crispy cereal in milk(classic)",
-        "Crispy cereal in milk(honey)",
-        "Crispy cereal in milk(choco)",
-        "Classic flavoured Porridge",
-        "Chocolate flavoured Porridge",
-    ];
-    const toppings = [
-        { name: "Oat Milk Substitution", price: 1.0, isDisabled: false },
-        { name: "Boba", price: 1.0, isDisabled: false },
-        { name: "Extra Espresso Shot", price: 2.0, isDisabled: true },
-        { name: "Red Bean", price: 1.0, isDisabled: false },
-    ];
-    const noToppingsItems = [
-        "Crispy cereal in milk(classic)",
-        "Crispy cereal in milk(honey)",
-        "Crispy cereal in milk(choco)",
-        "Classic flavoured Porridge",
-        "Chocolate flavoured Porridge",
-    ];
-    const noHotItems = [
-        "Crispy cereal in milk(classic)",
-        "Crispy cereal in milk(honey)",
-        "Crispy cereal in milk(choco)",
-        "Cocoa",
-        "Matcha milk",
-        "Matcha boba",
-        "Tai Red Tea",
-        "Coconut Water",
-        "Milk tea",
-        "Jasmine Milktea",
-        "Boba",
-        "Refreshing babyblue drink",
-        "Pure milk",
-        "Black currant oolang tea",
-    ];
-    const noColdItems = [
-        "Classic flavoured Porridge",
-        "Chocolate flavoured Porridge",
-    ];
-    const noNormalItems = [
-        "Crispy cereal in milk(classic)",
-        "Crispy cereal in milk(honey)",
-        "Crispy cereal in milk(choco)",
-        "Classic flavoured Porridge",
-        "Chocolate flavoured Porridge",
-    ];
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -142,7 +116,17 @@ const Order = ({ itemType }: { itemType: string }) => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    setItemPrice(data[0].price);
+                    const convertedData = {
+                        price: data[0].price,
+                        hot: !!data[0].hot,
+                        normal: !!data[0].normal,
+                        cold: !!data[0].cold,
+                        large: !!data[0].large,
+                        toppings: !!data[0].toppings,
+                    };
+
+                    setItemDetails(convertedData);
+                    console.log("Item details:", convertedData);
                 } else {
                     console.error("Error fetching drink details:", data.error);
                     setIsInvalidDrink(true);
@@ -154,7 +138,33 @@ const Order = ({ itemType }: { itemType: string }) => {
         };
 
         fetchItemDetails().then(() => setIsLoadingBack(false));
-    }, [itemName, itemType, setItemPrice]);
+    }, [itemName, itemType]);
+
+    useEffect(() => {
+        const fetchToppings = async () => {
+            try {
+                const response = await fetch(`${baseUrl}/api/toppings`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    const convertedData = data.map((topping: Topping) => ({
+                        name: topping.name,
+                        price: topping.price,
+                        disabled: !!topping.disabled,
+                    }));
+
+                    setToppings(convertedData);
+                    console.log("Toppings:", convertedData);
+                } else {
+                    console.error("Error fetching toppings:", data.error);
+                }
+            } catch (error) {
+                console.error("Error fetching toppings:", error);
+            }
+        };
+
+        fetchToppings();
+    }, []);
 
     useEffect(() => {
         fetch(`${baseUrl}/api/userData`, {
@@ -173,8 +183,11 @@ const Order = ({ itemType }: { itemType: string }) => {
     });
 
     useEffect(() => {
-        setOptions((prevOptions) => ({ ...prevOptions, total: itemPrice }));
-    }, [itemPrice]);
+        setOptions((prevOptions) => ({
+            ...prevOptions,
+            total: itemDetails.price,
+        }));
+    }, [itemDetails]);
 
     const handleSizeChange = (newValue: string | undefined, field: any) => {
         field.onChange(newValue);
@@ -326,9 +339,9 @@ const Order = ({ itemType }: { itemType: string }) => {
                                                     </SelectItem>
                                                     <SelectItem
                                                         value="Large"
-                                                        disabled={noLargeItems.includes(
-                                                            itemName,
-                                                        )}
+                                                        disabled={
+                                                            !itemDetails.large
+                                                        }
                                                     >
                                                         Large
                                                     </SelectItem>
@@ -357,25 +370,25 @@ const Order = ({ itemType }: { itemType: string }) => {
                                                 <SelectContent>
                                                     <SelectItem
                                                         value="Hot"
-                                                        disabled={noHotItems.includes(
-                                                            itemName,
-                                                        )}
+                                                        disabled={
+                                                            !itemDetails.hot
+                                                        }
                                                     >
                                                         Hot
                                                     </SelectItem>
                                                     <SelectItem
                                                         value="Normal"
-                                                        disabled={noNormalItems.includes(
-                                                            itemName,
-                                                        )}
+                                                        disabled={
+                                                            !itemDetails.normal
+                                                        }
                                                     >
                                                         Normal
                                                     </SelectItem>
                                                     <SelectItem
                                                         value="Cold"
-                                                        disabled={noColdItems.includes(
-                                                            itemName,
-                                                        )}
+                                                        disabled={
+                                                            !itemDetails.cold
+                                                        }
                                                     >
                                                         Cold
                                                     </SelectItem>
@@ -392,9 +405,7 @@ const Order = ({ itemType }: { itemType: string }) => {
                                         <FormItem>
                                             <CardTitle
                                                 className={`${
-                                                    noToppingsItems.includes(
-                                                        itemName,
-                                                    )
+                                                    !itemDetails.toppings
                                                         ? "text-opacity-50 text-muted-foreground"
                                                         : ""
                                                 }`}
@@ -404,72 +415,70 @@ const Order = ({ itemType }: { itemType: string }) => {
                                             <FormDescription>
                                                 Select the toppings you want.
                                             </FormDescription>
-                                            {toppings.map((topping) => (
-                                                <FormField
-                                                    key={topping.name}
-                                                    control={form.control}
-                                                    name="toppings"
-                                                    render={({ field }) => {
-                                                        return (
-                                                            <FormItem
-                                                                key={
-                                                                    topping.name
-                                                                }
-                                                                className="flex flex-row items-start space-x-3 space-y-0"
-                                                            >
-                                                                <FormControl>
-                                                                    <Checkbox
-                                                                        id={
+                                            {toppings.map(
+                                                (topping: Topping) => (
+                                                    <FormField
+                                                        key={topping.name}
+                                                        control={form.control}
+                                                        name="toppings"
+                                                        render={({ field }) => {
+                                                            return (
+                                                                <FormItem
+                                                                    key={
+                                                                        topping.name
+                                                                    }
+                                                                    className="flex flex-row items-start space-x-3 space-y-0"
+                                                                >
+                                                                    <FormControl>
+                                                                        <Checkbox
+                                                                            id={
+                                                                                topping.name
+                                                                            }
+                                                                            disabled={
+                                                                                topping.disabled ||
+                                                                                !itemDetails.toppings
+                                                                            }
+                                                                            checked={
+                                                                                !!(
+                                                                                    field.value as string[]
+                                                                                )?.includes(
+                                                                                    topping.name,
+                                                                                )
+                                                                            }
+                                                                            onCheckedChange={(
+                                                                                checked,
+                                                                            ) =>
+                                                                                handleToppingChange(
+                                                                                    typeof checked ===
+                                                                                        "boolean"
+                                                                                        ? checked
+                                                                                        : false,
+                                                                                    field,
+                                                                                    topping,
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                    </FormControl>
+                                                                    <FormLabel
+                                                                        htmlFor={
                                                                             topping.name
                                                                         }
-                                                                        disabled={
-                                                                            topping.isDisabled ||
-                                                                            (noToppingsItems.includes(
-                                                                                itemName,
-                                                                            ) &&
-                                                                                topping.name !==
-                                                                                    "Extra Espresso Shot")
+                                                                        className="text-sm font-base leading-4 cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                                    >
+                                                                        {
+                                                                            topping.name
                                                                         }
-                                                                        checked={
-                                                                            !!(
-                                                                                field.value as string[]
-                                                                            )?.includes(
-                                                                                topping.name,
-                                                                            )
+                                                                        {" ¥"}
+                                                                        {
+                                                                            topping.price
                                                                         }
-                                                                        onCheckedChange={(
-                                                                            checked,
-                                                                        ) =>
-                                                                            handleToppingChange(
-                                                                                typeof checked ===
-                                                                                    "boolean"
-                                                                                    ? checked
-                                                                                    : false,
-                                                                                field,
-                                                                                topping,
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                </FormControl>
-                                                                <FormLabel
-                                                                    htmlFor={
-                                                                        topping.name
-                                                                    }
-                                                                    className="text-sm font-base leading-4 cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                                                >
-                                                                    {
-                                                                        topping.name
-                                                                    }
-                                                                    {" ¥"}
-                                                                    {
-                                                                        topping.price
-                                                                    }
-                                                                </FormLabel>
-                                                            </FormItem>
-                                                        );
-                                                    }}
-                                                />
-                                            ))}
+                                                                    </FormLabel>
+                                                                </FormItem>
+                                                            );
+                                                        }}
+                                                    />
+                                                ),
+                                            )}
                                             <FormMessage />
                                         </FormItem>
                                     )}
