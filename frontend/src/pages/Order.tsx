@@ -220,11 +220,23 @@ const Order = ({ itemType }: { itemType: string }) => {
 
             let newTotal = prevOptions.total;
 
-            if (currentSize === "Medium" && newSize === "Large") {
+            if (
+                currentSize === "Medium" &&
+                newSize === "Large" &&
+                newItemAddedAmount !== "8"
+            ) {
                 newTotal += 3;
-            } else if (!currentSize && newSize === "Large") {
+            } else if (
+                !currentSize &&
+                newSize === "Large" &&
+                newItemAddedAmount !== "8"
+            ) {
                 newTotal += 3;
-            } else if (currentSize === "Large" && newSize === "Medium") {
+            } else if (
+                currentSize === "Large" &&
+                newSize === "Medium" &&
+                newItemAddedAmount !== "8"
+            ) {
                 newTotal -= 3;
             }
 
@@ -289,7 +301,6 @@ const Order = ({ itemType }: { itemType: string }) => {
             price: finalTotal,
             comments: value.comments,
             useCup: value.useCup,
-            balance: userData.balance - finalTotal,
         };
 
         if (

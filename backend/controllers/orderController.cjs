@@ -49,8 +49,8 @@ const orderResult = async (data, user_id) => {
         const [result] = await pool.query(sql, values);
 
         const updateSql =
-            "UPDATE accounts SET Balance = ? WHERE First_name = ?";
-        const updateValues = [data.balance, data.firstName];
+            "UPDATE accounts SET Balance = Balance - ? WHERE user_id = ?";
+        const updateValues = [data.price, user_id];
 
         await pool.query(updateSql, updateValues);
 
