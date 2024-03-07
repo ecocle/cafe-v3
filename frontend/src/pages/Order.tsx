@@ -67,7 +67,11 @@ type ItemDetails = {
 
 const Order = ({ itemType }: { itemType: string }) => {
     const hashParams = new URLSearchParams(window.location.hash.substr(1));
+    const newItemDetails = localStorage.getItem("orderDetails");
+    const newItemAddedAmount = localStorage.getItem("addedAmount");
     const itemName = hashParams.get("name") ?? "";
+    const [showOptions, setShowOptions] = useState(false);
+    const [selectedAddition, setSelectedAddition] = useState("");
     const [itemDetails, setItemDetails] = useState<ItemDetails>({
         price: 0,
         hot: false,
@@ -125,7 +129,27 @@ const Order = ({ itemType }: { itemType: string }) => {
                         toppings: !!data[0].toppings,
                     };
 
-                    setItemDetails(convertedData);
+                    if (newItemDetails && newItemAddedAmount === "5") {
+                        setItemDetails({
+                            price: 5,
+                            hot: !!data[0].hot,
+                            normal: !!data[0].normal,
+                            cold: !!data[0].cold,
+                            large: false,
+                            toppings: false,
+                        });
+                    } else if (newItemDetails && newItemAddedAmount === "8") {
+                        setItemDetails({
+                            price: 8,
+                            hot: !!data[0].hot,
+                            normal: !!data[0].normal,
+                            cold: !!data[0].cold,
+                            large: true,
+                            toppings: false,
+                        });
+                    } else {
+                        setItemDetails(convertedData);
+                    }
                 } else {
                     console.error("Error fetching drink details:", data.error);
                     setIsInvalidDrink(true);
@@ -268,6 +292,25 @@ const Order = ({ itemType }: { itemType: string }) => {
             balance: userData.balance - finalTotal,
         };
 
+        if (
+            (itemName === "Rose Velvet Latte" && selectedAddition === "") ||
+            (itemName === "Tropical Rosy Fairytale" && selectedAddition === "")
+        ) {
+            localStorage.setItem("orderDetails", JSON.stringify(orderDetails));
+            setShowOptions(true);
+            return;
+        }
+
+        if (selectedAddition === "5") {
+            localStorage.setItem("addedAmount", "5");
+            navigate("/");
+            return;
+        } else if (selectedAddition === "8") {
+            localStorage.setItem("addedAmount", "8");
+            navigate("/");
+            return;
+        }
+
         try {
             const response = await fetch(`${baseUrl}/api/order`, {
                 method: "POST",
@@ -277,6 +320,25 @@ const Order = ({ itemType }: { itemType: string }) => {
                 },
                 body: JSON.stringify(orderDetails),
             });
+
+            if (newItemDetails) {
+                const response2 = await fetch(`${baseUrl}/api/order`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: newItemDetails,
+                });
+
+                if (!response2.ok) {
+                    console.error("Error placing order");
+                    setIsLoading(false);
+                }
+
+                localStorage.removeItem("orderDetails");
+                localStorage.removeItem("addedAmount");
+            }
 
             if (!response.ok) {
                 console.error("Error placing order");
@@ -541,6 +603,34 @@ const Order = ({ itemType }: { itemType: string }) => {
                                         <span>Place Order</span>
                                     )}
                                 </Button>
+                                {showOptions && (
+                                    <div>
+                                        <Button
+                                            type="submit"
+                                            onClick={() =>
+                                                setSelectedAddition("0")
+                                            }
+                                        >
+                                            Order normally
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            onClick={() =>
+                                                setSelectedAddition("5")
+                                            }
+                                        >
+                                            Plus ¥5 for free medium drink
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            onClick={() =>
+                                                setSelectedAddition("8")
+                                            }
+                                        >
+                                            Plus ¥8 for free large drink
+                                        </Button>
+                                    </div>
+                                )}
                                 {hasPriceError && (
                                     <p className="text-destructive">
                                         Not enough fund in account
