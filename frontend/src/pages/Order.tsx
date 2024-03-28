@@ -187,7 +187,7 @@ const Order = ({ itemType }: { itemType: string }) => {
         }));
     }, [itemDetails]);
 
-    const handleSizeChange = (newValue: string | undefined, field: any) => {
+    const handleSizeChange = (newValue: string, field: any) => {
         field.onChange(newValue);
 
         setOptions((prevOptions) => {
