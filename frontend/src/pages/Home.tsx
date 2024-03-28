@@ -217,8 +217,8 @@ const ProfileDropdown = () => {
 
 const Home = () => {
     return (
-        <div className="flex flex-col h-full w-full">
-            <div className="space-x-2 flex flex-row justify-end h-1/6 m-2">
+        <div className="flex flex-col flex-grow h-full w-full">
+            <div className="space-x-2 basis-40 flex flex-row justify-end m-2">
                 <ModeToggle />
                 {token ? (
                     <div className="space-x-2">

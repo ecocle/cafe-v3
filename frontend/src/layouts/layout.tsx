@@ -14,9 +14,9 @@ import NotFound from "@/pages/404";
 const Layout = () => {
     return (
         <Router>
-            <div className="flex flex-col justify-center items-center h-screen w-screen bg-background">
+            <div className="flex flex-col min-h-screen bg-background">
                 <Breadcrumb />
-                <main className="h-full w-full flex flex-col justify-center items-center overflow-auto">
+                <main className="h-full flex flex-col justify-center items-center flex-grow">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/view-orders" element={<ViewOrders />} />
@@ -47,8 +47,8 @@ const Layout = () => {
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </main>
-                <footer className="text-muted-foreground font-normal mt-auto mb-2">
-                    <p>Made by Shawn</p>
+                <footer className="text-muted-foreground font-normal py-2 text-center">
+                    Made by Shawn and managed by Anja & Shawn.
                 </footer>
             </div>
         </Router>

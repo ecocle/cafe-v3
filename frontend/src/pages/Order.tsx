@@ -67,8 +67,6 @@ type ItemDetails = {
 
 const Order = ({ itemType }: { itemType: string }) => {
     const hashParams = new URLSearchParams(window.location.hash.substr(1));
-    const newItemDetails = localStorage.getItem("orderDetails");
-    const newItemAddedAmount = localStorage.getItem("addedAmount");
     const itemName = hashParams.get("name") ?? "";
     const [itemDetails, setItemDetails] = useState<ItemDetails>({
         price: 0,
@@ -127,27 +125,7 @@ const Order = ({ itemType }: { itemType: string }) => {
                         toppings: !!data[0].toppings,
                     };
 
-                    if (newItemDetails && newItemAddedAmount === "5") {
-                        setItemDetails({
-                            price: 5,
-                            hot: !!data[0].hot,
-                            normal: !!data[0].normal,
-                            cold: !!data[0].cold,
-                            large: false,
-                            toppings: false,
-                        });
-                    } else if (newItemDetails && newItemAddedAmount === "8") {
-                        setItemDetails({
-                            price: 8,
-                            hot: !!data[0].hot,
-                            normal: !!data[0].normal,
-                            cold: !!data[0].cold,
-                            large: true,
-                            toppings: false,
-                        });
-                    } else {
-                        setItemDetails(convertedData);
-                    }
+                    setItemDetails(convertedData);
                 } else {
                     console.error("Error fetching drink details:", data.error);
                     setIsInvalidDrink(true);
@@ -218,29 +196,18 @@ const Order = ({ itemType }: { itemType: string }) => {
 
             let newTotal = prevOptions.total;
 
-            if (
-                currentSize === "Medium" &&
-                newSize === "Large" &&
-                newItemAddedAmount !== "8"
-            ) {
+            if (currentSize === "Medium" && newSize === "Large") {
                 newTotal += 3;
-            } else if (
-                !currentSize &&
-                newSize === "Large" &&
-                newItemAddedAmount !== "8"
-            ) {
+            } else if (!currentSize && newSize === "Large") {
                 newTotal += 3;
-            } else if (
-                currentSize === "Large" &&
-                newSize === "Medium" &&
-                newItemAddedAmount !== "8"
-            ) {
+            } else if (currentSize === "Large" && newSize === "Medium") {
                 newTotal -= 3;
             }
 
             return {
                 ...prevOptions,
                 total: newTotal,
+                size: newSize,
             };
         });
     };
@@ -289,6 +256,7 @@ const Order = ({ itemType }: { itemType: string }) => {
         }
 
         setIsLoading(true);
+
         const orderDetails = {
             firstName: userData.firstName,
             lastName: userData.lastName,
